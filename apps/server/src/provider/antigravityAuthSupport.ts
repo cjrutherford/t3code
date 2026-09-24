@@ -331,7 +331,7 @@ export const prepareAntigravityProfile = Effect.fn("prepareAntigravityProfile")(
   const helperExecutable =
     platform === "win32" ? runtimeExecutablePath.replaceAll("\\", "/") : runtimeExecutablePath;
   const browserArguments = useEmbeddedBrowserHelper
-    ? [helperExecutable, ANTIGRAVITY_BROWSER_COMMAND, "%s"]
+    ? [helperExecutable, "--no-warnings", ANTIGRAVITY_BROWSER_COMMAND, "%s"]
     : [helperExecutable, "-e", browserHelperSource, "--", "%s"];
   const browserCommand = browserArguments.map(quoteBrowserArgument).join(" ");
   if (
@@ -359,7 +359,7 @@ export const prepareAntigravityProfile = Effect.fn("prepareAntigravityProfile")(
   };
   const environment = antigravityEnvironment(profile, input.baseEnv ?? process.env, auth);
   const helperArguments = useEmbeddedBrowserHelper
-    ? [ANTIGRAVITY_BROWSER_COMMAND, browserPreflightUrl]
+    ? ["--no-warnings", ANTIGRAVITY_BROWSER_COMMAND, browserPreflightUrl]
     : ["-e", browserHelperSource, "--", browserPreflightUrl];
   yield* Effect.gen(function* () {
     const child = yield* spawner.spawn(

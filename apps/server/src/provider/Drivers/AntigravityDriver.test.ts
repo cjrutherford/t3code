@@ -188,7 +188,11 @@ const makeHarness = Effect.fn("makeAntigravityDriverHarness")(function* (
       if (command._tag !== "StandardCommand")
         return yield* Effect.die("Unexpected process pipeline.");
       const encoder = new TextEncoder();
-      if (options.standalone === true && command.args[0] === ANTIGRAVITY_BROWSER_COMMAND) {
+      if (
+        options.standalone === true &&
+        command.args[0] === "--no-warnings" &&
+        command.args[1] === ANTIGRAVITY_BROWSER_COMMAND
+      ) {
         browserCommands.push({ command: command.command, args: command.args });
         return ChildProcessSpawner.makeHandle({
           pid: ChildProcessSpawner.ProcessId(1),
@@ -200,7 +204,7 @@ const makeHarness = Effect.fn("makeAntigravityDriverHarness")(function* (
           stdout: Stream.empty,
           stderr: Stream.make(
             encoder.encode(
-              `${ANTIGRAVITY_AUTH_BROWSER_MARKER}${encodeJsonString(command.args[1] ?? "")}\n`,
+              `${ANTIGRAVITY_AUTH_BROWSER_MARKER}${encodeJsonString(command.args[2] ?? "")}\n`,
             ),
           ),
           all: Stream.empty,
@@ -391,7 +395,7 @@ it.layer(testLayer)("AntigravityDriver", (it) => {
         expect(h.browserCommands).toHaveLength(1);
         expect(h.browserCommands[0]).toMatchObject({
           command: "/packaged/t3",
-          args: [ANTIGRAVITY_BROWSER_COMMAND, expect.any(String)],
+          args: ["--no-warnings", ANTIGRAVITY_BROWSER_COMMAND, expect.any(String)],
         });
         yield* h.assertClosed;
       }).pipe(Effect.scoped),
