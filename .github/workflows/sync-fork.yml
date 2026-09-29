@@ -1,0 +1,40 @@
+name: Sync fork from upstream
+
+# Fork-only workflow: keeps cjrutherford/t3code main caught up with
+# pingdotgg/t3code. The `if` guard means this is a no-op even if the file
+# ever reaches upstream via a PR, so it is safe to keep on main.
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: Sync main with upstream
+    if: github.repository == 'cjrutherford/t3code'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout fork main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge upstream main
+        run: |
+          set -euo pipefail
+          git remote add upstream https://github.com/pingdotgg/t3code.git 2>/dev/null || true
+          git fetch upstream main
+          git checkout main
+          if git merge --ff-only upstream/main; then
+            echo "Fast-forwarded to upstream."
+          else
+            echo "Fast-forward not possible (fork-only commits present); merging."
+            git merge --no-edit upstream/main
+          fi
+          git push origin main
