@@ -148,6 +148,14 @@ it.effect("runs the hidden Antigravity browser helper", () =>
   runCliWithRuntime(["__antigravity-browser", "https://example.invalid/t3-browser-helper"]),
 );
 
+it.effect("accepts --no-warnings after the Antigravity browser helper subcommand", () =>
+  runCliWithRuntime([
+    "__antigravity-browser",
+    "--no-warnings",
+    "https://example.invalid/t3-browser-helper",
+  ]),
+);
+
 const makeProjectLookupFixture = Effect.fn("makeProjectLookupFixture")(function* (
   withThread: boolean,
   removeWorkspace: boolean,

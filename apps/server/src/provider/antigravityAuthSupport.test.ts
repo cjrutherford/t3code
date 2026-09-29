@@ -746,7 +746,7 @@ it.layer(NodeServices.layer)("Antigravity profile preparation", (it) => {
       );
       expect(command).toMatchObject({
         command: "/packaged/t3",
-        args: ["--no-warnings", ANTIGRAVITY_BROWSER_COMMAND, preflightUrl],
+        args: [ANTIGRAVITY_BROWSER_COMMAND, "--no-warnings", preflightUrl],
       });
       expect(profile.browserCommand).toContain(ANTIGRAVITY_BROWSER_COMMAND);
     }),

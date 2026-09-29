@@ -190,8 +190,8 @@ const makeHarness = Effect.fn("makeAntigravityDriverHarness")(function* (
       const encoder = new TextEncoder();
       if (
         options.standalone === true &&
-        command.args[0] === "--no-warnings" &&
-        command.args[1] === ANTIGRAVITY_BROWSER_COMMAND
+        command.args[0] === ANTIGRAVITY_BROWSER_COMMAND &&
+        command.args[1] === "--no-warnings"
       ) {
         browserCommands.push({ command: command.command, args: command.args });
         return ChildProcessSpawner.makeHandle({
@@ -396,7 +396,7 @@ it.layer(testLayer)("AntigravityDriver", (it) => {
         expect(h.browserCommands).toHaveLength(1);
         expect(h.browserCommands[0]).toMatchObject({
           command: "/packaged/t3",
-          args: ["--no-warnings", ANTIGRAVITY_BROWSER_COMMAND, expect.any(String)],
+          args: [ANTIGRAVITY_BROWSER_COMMAND, "--no-warnings", expect.any(String)],
         });
         yield* h.assertClosed;
       }).pipe(Effect.scoped),
